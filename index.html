@@ -1,0 +1,237 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Funny Sun</title>
+  <style>
+
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    font-family: 'Lobster', cursive;
+  } 
+
+ .header {
+    width: auto;
+    height: 70px;
+    font-size: 35px;
+    line-height: 70px;
+    text-align: center;
+    vertical-align: middle;
+    color: white;
+    background-color: #FFC107;
+    font-family: 'Lobster', cursive;
+}
+
+  .main {
+    width: auto;
+    height: 537px;
+  }
+
+  .footer {
+    width: auto;
+    height: 55px;
+    font-size: 27px;
+    color: white;
+    background-color: #FFC107;
+    text-align: center;
+    line-height: 2;
+  }
+
+  .footer-frase {
+    width: 470px;
+    height: 55px;
+    font-size: 27px;
+    color: white;
+    text-align: center;
+    line-height: 2;
+    /*background-color: red;*/
+    position: absolute;
+    left: 34%;
+  }
+
+  .table {
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: 120px;
+    left: 480px;
+    /*background-color: yellow;*/
+    border-collapse: collapse;
+  }
+
+  .puzzle {
+    width: 200px;
+    height: 200px;
+  }
+
+  .rotate-0 {
+    transform: rotate(0deg);
+  }
+
+  .rotate-90 {
+    transform: rotate(90deg);
+  }
+
+  .rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  .rotate-270 {
+    transform: rotate(270deg);
+  }
+
+  .saturate {
+    filter: saturate(2.5);
+  }
+
+   </style>
+
+  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+
+  </head>
+
+  <body>
+    <div class="header">Собери весёлое солнышко!</div>
+    <div class="main">
+      <table class="table">
+        <tr>
+          <td class="puzzle"><img src="./img/sun_2_01.png" class="puzzle-image" data-element-row-index="0" data-element-col-index="0"></td>
+          <td class="puzzle"><img src="./img/sun_2_02.png" class="puzzle-image" data-element-row-index="0" data-element-col-index="1"></td>
+        </tr>
+        <tr>
+          <td class="puzzle"><img src="./img/sun_2_03.png" class="puzzle-image" data-element-row-index="1" data-element-col-index="0"></td>
+          <td class="puzzle"><img src="./img/sun_2_04.png" class="puzzle-image" data-element-row-index="1" data-element-col-index="1"></td>
+        </tr>
+      </table>
+
+    </div>
+    <div class="footer"><div class="footer-frase">У тебя получится!</div></div>
+  </body>
+  </html>
+
+  <script type="text/javascript">
+
+  var listRowListPuzzle = [
+    [
+      {
+        "img-src": "./img/sun_2_01.png",
+        "rotate": 0,
+      },
+      {
+        "img-src": "./img/sun_2_02.png",
+        "rotate": 0,
+      }
+    ],
+    [
+      {
+        "img-src": "./img/sun_2_03.png",
+        "rotate": 0,
+      },
+      {
+        "img-src": "./img/sun_2_04.png",
+        "rotate": 0,
+      }
+    ],
+  ]
+
+  var listElementRow = document.querySelectorAll("table tr");
+  var frase = document.querySelector(".footer-frase");
+
+  var listRowListElementPuzzle = [];
+  for (var i = 0; i < listElementRow.length; i++) {
+    listRowListElementPuzzle[i] = listElementRow[i].querySelectorAll(":scope .puzzle");
+  }
+  var listRowListElementPuzzleImg = [];
+  for (var i = 0; i < listElementRow.length; i++) {
+    listRowListElementPuzzleImg[i] = listElementRow[i].querySelectorAll(":scope .puzzle-image")
+  }
+
+  shufflePuzzle();
+
+  function redrawPuzzle (rowIndex, colIndex) {
+    var puzzle = listRowListPuzzle[rowIndex][colIndex];
+    var elementPuzzleImg = listRowListElementPuzzleImg[rowIndex][colIndex];
+    elementPuzzleImg.classList.remove("rotate-0");
+    elementPuzzleImg.classList.remove("rotate-90");
+    elementPuzzleImg.classList.remove("rotate-180");
+    elementPuzzleImg.classList.remove("rotate-270");
+    elementPuzzleImg.classList.add("rotate-"+puzzle["rotate"]);
+    elementPuzzleImg.src = puzzle["img-src"]
+  }
+
+  for (var i = 0; i < listRowListElementPuzzleImg.length; i++) {
+    for (var j = 0; j < listRowListElementPuzzleImg[i].length; j++) {
+    listRowListElementPuzzleImg[i][j].onclick = onclickPuzzleImg;
+  }
+} 
+
+function onclickPuzzleImg(event) {
+  var currentRowIndex = event.currentTarget.dataset["elementRowIndex"];
+  var currentColIndex = event.currentTarget.dataset["elementColIndex"];
+  var puzzle = listRowListPuzzle[currentRowIndex][currentColIndex];
+  puzzle["rotate"]+=90;
+    if (puzzle["rotate"] == 360) {
+      puzzle["rotate"] = 0;
+    }
+  redrawPuzzle(currentRowIndex, currentColIndex);
+  checkPuzzle();
+}
+
+function shufflePuzzle () {
+  for (var i = 0; i < listRowListPuzzle.length; i++) {
+      for (var j = 0; j < listRowListPuzzle[i].length; j++) {
+      listRowListPuzzle[i][j].rotate = getRandomRotate();
+      redrawPuzzle(i, j);
+    }
+  } 
+}
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomRotate() {
+  var listRandomRotate = [0, 90, 180, 270];
+  var randomIndex = getRandomInt(1, 3);
+  return listRandomRotate[randomIndex];
+}
+
+function getIsWin () {
+  for (var i = 0; i < listRowListPuzzle.length; i++) {
+      for (var j = 0; j < listRowListPuzzle[i].length; j++) {
+      if (listRowListPuzzle[i][j].rotate !== 0) {
+        return false;
+      }
+    }
+  } 
+  return true;
+} 
+
+function checkPuzzle() {
+  var isWin = getIsWin();
+  redrawIsWin(isWin);
+}
+
+function redrawIsWin(isWin) {
+  for (var i = 0; i < listRowListElementPuzzleImg.length; i++) {
+    for (var j = 0; j < listRowListElementPuzzleImg[i].length; j++) {
+      var elementPuzzleImg = listRowListElementPuzzleImg[i][j];
+      if (isWin) {
+        elementPuzzleImg.classList.add("saturate")
+      }
+      else {
+        elementPuzzleImg.classList.remove("saturate")
+      }
+    }
+}
+  if (isWin) {
+    frase.innerText = frase.innerText.replace("У тебя получится!", "Молодец!")
+  }
+  else {
+    frase.innerText = frase.innerText.replace("Молодец!", "У тебя получится!")
+  }
+}
+
+  </script>}
