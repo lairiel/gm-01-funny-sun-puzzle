@@ -1,1 +1,1 @@
-gm-01-funny-sun-puzzle
+https://rawgithub.com/lairiel/gm-01-funny-sun-puzzle/master/index.html
